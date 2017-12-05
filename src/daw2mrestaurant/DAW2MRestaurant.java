@@ -24,8 +24,12 @@ public class DAW2MRestaurant {
         try {
             restaurantDAO.conectar();
             System.out.println("Establecida la conexión.");
+            
+            System.out.println("Cerrando conexión con la base de datos");
+            restaurantDAO.desconectar();
+            System.out.println("Conexión cerrada.");
         } catch (SQLException ex) {
-            System.out.println("Error al conectar: "+ex.getMessage());
+            System.out.println("Error al conectar / desconectar: "+ex.getMessage());
         }
         
     }

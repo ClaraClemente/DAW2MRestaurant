@@ -20,4 +20,10 @@ public class RestaurantDAO {
         String pass = "root";
         conexion = DriverManager.getConnection(url, user, pass);
     }
+    
+    public void desconectar() throws SQLException {
+        if (conexion != null) {
+            conexion.close();
+        }
+    }
 }
