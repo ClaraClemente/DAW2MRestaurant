@@ -1,9 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Clase de TEST
  */
 package daw2mrestaurant;
+
+import dao.RestaurantDAO;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,7 +18,16 @@ public class DAW2MRestaurant {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        // Necesitamos un objeto de tipo RestaurantDAO
+        RestaurantDAO restaurantDAO = new RestaurantDAO();
+        System.out.println("Testeando conexión con la base de datos...");
+        try {
+            restaurantDAO.conectar();
+            System.out.println("Establecida la conexión.");
+        } catch (SQLException ex) {
+            System.out.println("Error al conectar: "+ex.getMessage());
+        }
+        
     }
     
 }
