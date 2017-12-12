@@ -4,6 +4,7 @@
 package daw2mrestaurant;
 
 import dao.RestaurantDAO;
+import excepciones.MiExcepcion;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,16 +32,16 @@ public class DAW2MRestaurant {
             try {
                 restaurantDAO.insertarCocinero(c1);
                 System.out.println("Cocinero dado de alta");
-            } catch (SQLException ex) {
-                System.out.println("Error al insertar: " + ex.getMessage());
+            } catch (MiExcepcion ex) {
+                System.out.println(ex.getMessage());
             }
             Cocinero c2 = new Cocinero("Maria Castañera", "33333333", "Mujer", 23, 0, "Entrantes");
             System.out.println("Testeando insert cocinero " + c2.getNombre());
             try {
                 restaurantDAO.insertarCocinero(c2);
                 System.out.println("Cocinero dado de alta");
-            } catch (SQLException ex) {
-                System.out.println("Error al insertar " + ex.getMessage());
+            } catch (MiExcepcion ex) {
+                System.out.println(ex.getMessage());
             }
             try {
                 System.out.println("Listado de todos los cocineros");
