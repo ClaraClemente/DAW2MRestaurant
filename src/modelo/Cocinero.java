@@ -82,6 +82,11 @@ public class Cocinero {
         this.nombre = nombre;
     }
 
+    @Override
+    public String toString() {
+        return "Cocinero{" + "nombre=" + nombre + ", telefono=" + telefono + ", sexo=" + sexo + ", edad=" + edad + ", experiencia=" + experiencia + ", especialidad=" + especialidad + '}';
+    }
+
     
     
 }

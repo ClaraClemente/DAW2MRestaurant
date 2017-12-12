@@ -5,6 +5,7 @@ package daw2mrestaurant;
 
 import dao.RestaurantDAO;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.Cocinero;
@@ -40,6 +41,15 @@ public class DAW2MRestaurant {
                 System.out.println("Cocinero dado de alta");
             } catch (SQLException ex) {
                 System.out.println("Error al insertar " + ex.getMessage());
+            }
+            try {
+                System.out.println("Listado de todos los cocineros");
+                List<Cocinero> cos = restaurantDAO.selectAllCocinero();
+                for (Cocinero c : cos) {
+                    System.out.println(c);
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error al consultar: " + ex.getMessage());
             }
             System.out.println("Cerrando conexión con la base de datos");
             restaurantDAO.desconectar();
