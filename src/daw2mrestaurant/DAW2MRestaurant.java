@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.Cocinero;
 import modelo.Plato;
+import modelo.RankingCocineroTO;
 
 /**
  *
@@ -69,6 +70,13 @@ public class DAW2MRestaurant {
             } catch (MiExcepcion ex) {
                 System.out.println(ex.getMessage());
             }
+            System.out.println("************************************************************");
+            System.out.println("Testeando ranking de cocineros");
+            List<RankingCocineroTO> ranking = restaurantDAO.rankingCocineros();
+            for (RankingCocineroTO r : ranking) {
+                System.out.println(r);
+            }
+            System.out.println("************************************************************");
             System.out.println("Cerrando conexión con la base de datos");
             restaurantDAO.desconectar();
             System.out.println("Conexión cerrada.");
