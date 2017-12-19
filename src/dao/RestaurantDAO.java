@@ -23,7 +23,7 @@ import modelo.RankingCocineroTO;
 public class RestaurantDAO {
 
     private Connection conexion;
-    
+
     // Ranking de cocineros
     public List<RankingCocineroTO> rankingCocineros() throws SQLException {
         String select = "select cocinero, count(*) as contador from plato group by cocinero order by contador desc";
@@ -131,6 +131,28 @@ public class RestaurantDAO {
                 ps.close();
             }
         }
+    }
+
+    // Función que borra un cocinero
+    public void borrarCocinero(Cocinero c) throws SQLException, MiExcepcion {
+        if (!existeCocinero(c)) {
+            throw new MiExcepcion("ERROR: No existe un cocinero con ese nombre");
+        }
+        String delete = "delete from cocinero where nombre='" + c.getNombre() + "'";
+        Statement st = conexion.createStatement();
+        st.executeUpdate(delete);
+        st.close();
+    }
+
+    // Función que borra un plato
+    public void borrarPlato(Plato p) throws SQLException, MiExcepcion {
+        if (!existePlato(p)) {
+            throw new MiExcepcion("ERROR: No existe un plato con ese nombre");
+        }
+        String delete = "delete from plato where nombre='" + p.getNombre() + "'";
+        Statement st = conexion.createStatement();
+        st.executeUpdate(delete);
+        st.close();
     }
 
     public void insertarCocinero(Cocinero c) throws SQLException, MiExcepcion {
