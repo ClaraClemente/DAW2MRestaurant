@@ -84,7 +84,7 @@ public class Cocinero {
 
     @Override
     public String toString() {
-        return "Cocinero{" + "nombre=" + nombre + ", telefono=" + telefono + ", sexo=" + sexo + ", edad=" + edad + ", experiencia=" + experiencia + ", especialidad=" + especialidad + '}';
+        return "{" + nombre + " - " + telefono + " - " + sexo + " - " + edad + " años, - Exp: " + experiencia + " años - " + especialidad + '}';
     }
 
     

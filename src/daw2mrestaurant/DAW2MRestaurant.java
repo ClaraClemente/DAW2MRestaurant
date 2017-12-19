@@ -23,10 +23,12 @@ public class DAW2MRestaurant {
     public static void main(String[] args) {
         // Necesitamos un objeto de tipo RestaurantDAO
         RestaurantDAO restaurantDAO = new RestaurantDAO();
+        System.out.println("************************************************************");
         System.out.println("Testeando conexión con la base de datos...");
         try {
             restaurantDAO.conectar();
             System.out.println("Establecida la conexión.");
+            System.out.println("************************************************************");
             Cocinero c1 = new Cocinero("Cocinillas Pérez", "12345555", "Hombre", 30, 10, "Postres");
             System.out.println("Testeando insert cocinero " + c1.getNombre());
             try {
@@ -35,6 +37,7 @@ public class DAW2MRestaurant {
             } catch (MiExcepcion ex) {
                 System.out.println(ex.getMessage());
             }
+            System.out.println("************************************************************");
             Cocinero c2 = new Cocinero("Maria Castañera", "33333333", "Mujer", 23, 0, "Entrantes");
             System.out.println("Testeando insert cocinero " + c2.getNombre());
             try {
@@ -43,6 +46,7 @@ public class DAW2MRestaurant {
             } catch (MiExcepcion ex) {
                 System.out.println(ex.getMessage());
             }
+            System.out.println("************************************************************");
             try {
                 System.out.println("Listado de todos los cocineros");
                 List<Cocinero> cos = restaurantDAO.selectAllCocinero();
@@ -52,6 +56,7 @@ public class DAW2MRestaurant {
             } catch (SQLException ex) {
                 System.out.println("Error al consultar: " + ex.getMessage());
             }
+            System.out.println("************************************************************");
             System.out.println("Cerrando conexión con la base de datos");
             restaurantDAO.desconectar();
             System.out.println("Conexión cerrada.");
