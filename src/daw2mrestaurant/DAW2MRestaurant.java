@@ -60,6 +60,15 @@ public class DAW2MRestaurant {
             System.out.println("Testeando insert plato con cocinero que no existe " + p2.getNombre());
             altaPlato(restaurantDAO, p2);
             System.out.println("************************************************************");
+            System.out.println("************************************************************");
+            System.out.println("Testeando obtener plato a partir del nombre: Lentejas");
+            try {
+                Plato aux = restaurantDAO.getPlatoByNombre("Garbanzos");
+                System.out.println("Datos del plato");
+                System.out.println(aux);
+            } catch (MiExcepcion ex) {
+                System.out.println(ex.getMessage());
+            }
             System.out.println("Cerrando conexión con la base de datos");
             restaurantDAO.desconectar();
             System.out.println("Conexión cerrada.");

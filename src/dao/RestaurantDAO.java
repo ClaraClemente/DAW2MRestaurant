@@ -46,15 +46,62 @@ public class RestaurantDAO {
         return cocineros;
     }
 
+    // Función que devuelve un plato a partir del nombre
+    public Plato getPlatoByNombre(String nombre) throws SQLException, MiExcepcion {
+        // Plato auxiliar para comprobar si ya existe
+        Plato aux = new Plato(nombre);
+        if (!existePlato(aux)) {
+            throw new MiExcepcion("ERROR: No existe ningún plato con ese nombre");
+        }
+        String select = "select * from plato where nombre='" + nombre + "'";
+        Statement st = conexion.createStatement();
+        ResultSet rs = st.executeQuery(select);
+        Plato p = new Plato();
+        // Como sólo habrá un resultado no hace falta while
+        if (rs.next()) {
+            p.setNombre(rs.getString("nombre"));
+            p.setPrecio(rs.getDouble("precio"));
+            p.setTipo(rs.getString("tipo"));
+            p.setCocinero(selectCocineroByNombre(rs.getString("cocinero")));
+        }
+        rs.close();
+        st.close();
+        return p;
+    }
+
+    // Función que devuelve un cocinero a partir del nombre
+    public Cocinero selectCocineroByNombre(String nombre) throws MiExcepcion, SQLException {
+        Cocinero aux = new Cocinero(nombre);
+        if (!existeCocinero(aux)) {
+            throw new MiExcepcion("ERROR: No existe ningún cocinero con ese nombre");
+        }
+        String select = "select * from cocinero where nombre='" + nombre + "'";
+        Statement st = conexion.createStatement();
+        ResultSet rs = st.executeQuery(select);
+        Cocinero c = new Cocinero();
+        if (rs.next()) {
+            c.setNombre(rs.getString("nombre"));
+            c.setEdad(rs.getInt("edad"));
+            c.setEspecialidad(rs.getString("especialidad"));
+            c.setExperiencia(rs.getInt("experiencia"));
+            c.setSexo(rs.getString("sexo"));
+            c.setTelefono(rs.getString("telefono"));
+        }
+        rs.close();
+        st.close();
+        return c;
+    }
+
     // Función que da de alta un plato 
     public void insertarPlato(Plato p) throws SQLException, MiExcepcion {
         // Tenemos que asegurarnos de que no existe un plato con el mismo 
         // nombre para evitar error de primary key
         if (existePlato(p)) {
             throw new MiExcepcion("ERROR: Ya existe un plato con ese nombre");
-        } else { // en realidad este else no hace falta
-            // Tenemos que asegurarnos de que existe el cocinero, sino
-            // daría error de foreign key
+        } else // en realidad este else no hace falta
+        // Tenemos que asegurarnos de que existe el cocinero, sino
+        // daría error de foreign key
+        {
             if (!existeCocinero(p.getCocinero())) {
                 throw new MiExcepcion("ERROR: No existe el cocinero. No se puede dar de alta el plato.");
             } else {
@@ -67,7 +114,6 @@ public class RestaurantDAO {
                 ps.executeUpdate();
                 ps.close();
             }
-            
         }
     }
 
