@@ -40,18 +40,36 @@ public class DAW2MRestaurant {
         try {
             restaurantDAO.conectar();
             System.out.println("Establecida la conexión.");
+
             System.out.println("************************************************************");
             System.out.println("Testeando insert cocinero " + c4.getNombre());
             altaCocinero(restaurantDAO, c4);
             System.out.println("************************************************************");
             System.out.println("Testeando insert cocinero duplicado " + c4.getNombre());
             altaCocinero(restaurantDAO, c4);
+
+            System.out.println("************************************************************");
+            System.out.println("Testeando modificar experiencia cocinero " + c4.getNombre());
+            System.out.println("Datos actuales");
+            System.out.println(c4);
+            System.out.println("Estableciendo experiencia en 20 años");
+            c4.setExperiencia(20);
+            modificarExperiencia(restaurantDAO, c4);
+            System.out.println("************************************************************");
+            System.out.println("Testeando modificar experiencia de un cocinero que no existe " + c3.getNombre());
+            System.out.println("Datos actuales");
+            System.out.println(c3);
+            System.out.println("Estableciendo experiencia en 0 años");
+            c3.setExperiencia(0);
+            modificarExperiencia(restaurantDAO, c3);
+            
             System.out.println("************************************************************");
             System.out.println("Listado de todos los cocineros");
             List<Cocinero> cos = restaurantDAO.selectAllCocinero();
             for (Cocinero c : cos) {
                 System.out.println(c);
             }
+
             System.out.println("************************************************************");
             System.out.println("Testeando insert plato: " + p1.getNombre());
             altaPlato(restaurantDAO, p1);
@@ -61,30 +79,35 @@ public class DAW2MRestaurant {
             System.out.println("************************************************************");
             System.out.println("Testeando insert plato con cocinero que no existe " + p3.getNombre());
             altaPlato(restaurantDAO, p3);
+
             System.out.println("************************************************************");
             System.out.println("Testeando obtener plato a partir del nombre: Lentejas");
             obtenerPlato(restaurantDAO, "Lentejas");
             System.out.println("************************************************************");
             System.out.println("Testeando obtener plato a partir del nombre (cuando no existe): Garbanzos");
             obtenerPlato(restaurantDAO, "Garbanzos");
+
             System.out.println("************************************************************");
             System.out.println("Testeando ranking de cocineros");
             List<RankingCocineroTO> ranking = restaurantDAO.rankingCocineros();
             for (RankingCocineroTO r : ranking) {
                 System.out.println(r);
             }
+
             System.out.println("************************************************************");
             System.out.println("Testeando borrar cocinero " + c1.getNombre());
             borrarCocinero(restaurantDAO, c4);
             System.out.println("************************************************************");
             System.out.println("Testeando borrar cocinero que ya no existe " + c1.getNombre());
             borrarCocinero(restaurantDAO, c4);
+
             System.out.println("************************************************************");
             System.out.println("Testeando borrar plato " + p1.getNombre());
             borrarPlato(restaurantDAO, p1);
             System.out.println("************************************************************");
             System.out.println("Testeando borrar plato que ya no existe  " + p1.getNombre());
             borrarPlato(restaurantDAO, p1);
+
             System.out.println("************************************************************");
             System.out.println("Cerrando conexión con la base de datos");
             restaurantDAO.desconectar();
@@ -94,6 +117,19 @@ public class DAW2MRestaurant {
             System.out.println("Error al conectar / desconectar: " + ex.getMessage());
         }
 
+    }
+
+    private static void modificarExperiencia(RestaurantDAO restaurantDAO, Cocinero c4) throws SQLException {
+        try {
+            restaurantDAO.modificarExperienciaCocinero(c4);
+            System.out.println("Experiencia modificada.");
+            System.out.println("Obteniendo datos de la BBDD del cocinero " + c4.getNombre() + " para comprobar la nueva experiencia");
+            Cocinero aux = restaurantDAO.getCocineroByNombre(c4.getNombre());
+            System.out.println("Nuevos datos");
+            System.out.println(aux);
+        } catch (MiExcepcion ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     private static void borrarPlato(RestaurantDAO restaurantDAO, Plato p1) throws SQLException {

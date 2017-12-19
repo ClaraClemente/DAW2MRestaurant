@@ -24,6 +24,7 @@ public class RestaurantDAO {
 
     private Connection conexion;
 
+    // ********************* Selects ****************************
     // Ranking de cocineros
     public List<RankingCocineroTO> rankingCocineros() throws SQLException {
         String select = "select cocinero, count(*) as contador from plato group by cocinero order by contador desc";
@@ -78,7 +79,7 @@ public class RestaurantDAO {
             p.setNombre(rs.getString("nombre"));
             p.setPrecio(rs.getDouble("precio"));
             p.setTipo(rs.getString("tipo"));
-            p.setCocinero(selectCocineroByNombre(rs.getString("cocinero")));
+            p.setCocinero(getCocineroByNombre(rs.getString("cocinero")));
         }
         rs.close();
         st.close();
@@ -86,7 +87,7 @@ public class RestaurantDAO {
     }
 
     // Función que devuelve un cocinero a partir del nombre
-    public Cocinero selectCocineroByNombre(String nombre) throws MiExcepcion, SQLException {
+    public Cocinero getCocineroByNombre(String nombre) throws MiExcepcion, SQLException {
         Cocinero aux = new Cocinero(nombre);
         if (!existeCocinero(aux)) {
             throw new MiExcepcion("ERROR: No existe ningún cocinero con ese nombre");
@@ -108,6 +109,43 @@ public class RestaurantDAO {
         return c;
     }
 
+    // ********************* Updates ****************************
+    public void modificarExperienciaCocinero(Cocinero c) throws SQLException, MiExcepcion {
+        if (!existeCocinero(c)) {
+            throw new MiExcepcion("ERROR: No existe un cocinero con ese nombre");
+        }
+        String update = "update cocinero set experiencia=? where nombre=?";
+        PreparedStatement ps = conexion.prepareStatement(update);
+        ps.setInt(1, c.getExperiencia());
+        ps.setString(2, c.getNombre());
+        ps.executeUpdate();
+        ps.close();
+    }
+    
+    // ********************* Deletes ****************************
+      // Función que borra un cocinero
+    public void borrarCocinero(Cocinero c) throws SQLException, MiExcepcion {
+        if (!existeCocinero(c)) {
+            throw new MiExcepcion("ERROR: No existe un cocinero con ese nombre");
+        }
+        String delete = "delete from cocinero where nombre='" + c.getNombre() + "'";
+        Statement st = conexion.createStatement();
+        st.executeUpdate(delete);
+        st.close();
+    }
+
+    // Función que borra un plato
+    public void borrarPlato(Plato p) throws SQLException, MiExcepcion {
+        if (!existePlato(p)) {
+            throw new MiExcepcion("ERROR: No existe un plato con ese nombre");
+        }
+        String delete = "delete from plato where nombre='" + p.getNombre() + "'";
+        Statement st = conexion.createStatement();
+        st.executeUpdate(delete);
+        st.close();
+    }
+
+    // ********************* Inserts ****************************
     // Función que da de alta un plato 
     public void insertarPlato(Plato p) throws SQLException, MiExcepcion {
         // Tenemos que asegurarnos de que no existe un plato con el mismo 
@@ -133,28 +171,6 @@ public class RestaurantDAO {
         }
     }
 
-    // Función que borra un cocinero
-    public void borrarCocinero(Cocinero c) throws SQLException, MiExcepcion {
-        if (!existeCocinero(c)) {
-            throw new MiExcepcion("ERROR: No existe un cocinero con ese nombre");
-        }
-        String delete = "delete from cocinero where nombre='" + c.getNombre() + "'";
-        Statement st = conexion.createStatement();
-        st.executeUpdate(delete);
-        st.close();
-    }
-
-    // Función que borra un plato
-    public void borrarPlato(Plato p) throws SQLException, MiExcepcion {
-        if (!existePlato(p)) {
-            throw new MiExcepcion("ERROR: No existe un plato con ese nombre");
-        }
-        String delete = "delete from plato where nombre='" + p.getNombre() + "'";
-        Statement st = conexion.createStatement();
-        st.executeUpdate(delete);
-        st.close();
-    }
-
     public void insertarCocinero(Cocinero c) throws SQLException, MiExcepcion {
         if (existeCocinero(c)) {
             throw new MiExcepcion("ERROR: Ya existe un cocinero con ese nombre");
@@ -177,6 +193,7 @@ public class RestaurantDAO {
         }
     }
 
+    // ********************* Funciones auxiliares ****************************
     private boolean existePlato(Plato p) throws SQLException {
         String select = "select * from plato where nombre='" + p.getNombre() + "'";
         Statement st = conexion.createStatement();
@@ -203,6 +220,7 @@ public class RestaurantDAO {
         return existe;
     }
 
+   // ********************* Conectar / Desconectar ****************************
     public void conectar() throws SQLException {
         String url = "jdbc:mysql://localhost:3306/restaurant";
         String user = "root";
