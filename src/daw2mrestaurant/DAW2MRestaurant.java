@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.Cocinero;
+import modelo.Plato;
 
 /**
  *
@@ -23,39 +24,41 @@ public class DAW2MRestaurant {
     public static void main(String[] args) {
         // Necesitamos un objeto de tipo RestaurantDAO
         RestaurantDAO restaurantDAO = new RestaurantDAO();
+        // Datos de test
+        Cocinero c1 = new Cocinero("Cocinillas Pérez", "12345555", "Hombre", 30, 10, "Postres");
+        Cocinero c2 = new Cocinero("Maria Castañera", "33333333", "Mujer", 23, 0, "Entrantes");
+        Cocinero c3 = new Cocinero("Anonimo", "888444568", "Anonimo", 40, 10, "Platos principales");
+        Plato p1 = new Plato("Tarta tres chocolates", "Postre", 12.50, c1);
+        Plato p2 = new Plato("Ensalada de la huerta", "Entrantes", 9.90, c3);
+
+        // TEST:        
         System.out.println("************************************************************");
         System.out.println("Testeando conexión con la base de datos...");
         try {
             restaurantDAO.conectar();
             System.out.println("Establecida la conexión.");
             System.out.println("************************************************************");
-            Cocinero c1 = new Cocinero("Cocinillas Pérez", "12345555", "Hombre", 30, 10, "Postres");
             System.out.println("Testeando insert cocinero " + c1.getNombre());
-            try {
-                restaurantDAO.insertarCocinero(c1);
-                System.out.println("Cocinero dado de alta");
-            } catch (MiExcepcion ex) {
-                System.out.println(ex.getMessage());
+            altaCocinero(restaurantDAO, c1);
+            System.out.println("************************************************************");
+            System.out.println("Testeando insert cocinero duplicado " + c2.getNombre());
+            altaCocinero(restaurantDAO, c2);
+            System.out.println("************************************************************");
+            System.out.println("Listado de todos los cocineros");
+            List<Cocinero> cos = restaurantDAO.selectAllCocinero();
+            for (Cocinero c : cos) {
+                System.out.println(c);
             }
             System.out.println("************************************************************");
-            Cocinero c2 = new Cocinero("Maria Castañera", "33333333", "Mujer", 23, 0, "Entrantes");
-            System.out.println("Testeando insert cocinero " + c2.getNombre());
-            try {
-                restaurantDAO.insertarCocinero(c2);
-                System.out.println("Cocinero dado de alta");
-            } catch (MiExcepcion ex) {
-                System.out.println(ex.getMessage());
-            }
+            System.out.println("Testeando insert plato: " + p1.getNombre());
+            altaPlato(restaurantDAO, p1);
             System.out.println("************************************************************");
-            try {
-                System.out.println("Listado de todos los cocineros");
-                List<Cocinero> cos = restaurantDAO.selectAllCocinero();
-                for (Cocinero c : cos) {
-                    System.out.println(c);
-                }
-            } catch (SQLException ex) {
-                System.out.println("Error al consultar: " + ex.getMessage());
-            }
+            System.out.println("Testeando insert plato duplicado " + p1.getNombre());
+            altaPlato(restaurantDAO, p1);
+            System.out.println("************************************************************");
+            System.out.println("************************************************************");
+            System.out.println("Testeando insert plato con cocinero que no existe " + p2.getNombre());
+            altaPlato(restaurantDAO, p2);
             System.out.println("************************************************************");
             System.out.println("Cerrando conexión con la base de datos");
             restaurantDAO.desconectar();
@@ -64,6 +67,24 @@ public class DAW2MRestaurant {
             System.out.println("Error al conectar / desconectar: " + ex.getMessage());
         }
 
+    }
+
+    private static void altaPlato(RestaurantDAO restaurantDAO, Plato p1) throws SQLException {
+        try {
+            restaurantDAO.insertarPlato(p1);
+            System.out.println("Plato dado de alta");
+        } catch (MiExcepcion ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private static void altaCocinero(RestaurantDAO restaurantDAO, Cocinero c1) throws SQLException {
+        try {
+            restaurantDAO.insertarCocinero(c1);
+            System.out.println("Cocinero dado de alta");
+        } catch (MiExcepcion ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
 }

@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Cocinero;
+import modelo.Plato;
 
 /**
  *
@@ -45,9 +46,34 @@ public class RestaurantDAO {
         return cocineros;
     }
 
+    // Función que da de alta un plato 
+    public void insertarPlato(Plato p) throws SQLException, MiExcepcion {
+        // Tenemos que asegurarnos de que no existe un plato con el mismo 
+        // nombre para evitar error de primary key
+        if (existePlato(p)) {
+            throw new MiExcepcion("ERROR: Ya existe un plato con ese nombre");
+        } else { // en realidad este else no hace falta
+            // Tenemos que asegurarnos de que existe el cocinero, sino
+            // daría error de foreign key
+            if (!existeCocinero(p.getCocinero())) {
+                throw new MiExcepcion("ERROR: No existe el cocinero. No se puede dar de alta el plato.");
+            } else {
+                String insert = "insert into plato values (?, ?, ?, ?)";
+                PreparedStatement ps = conexion.prepareStatement(insert);
+                ps.setString(1, p.getNombre());
+                ps.setString(2, p.getTipo());
+                ps.setDouble(3, p.getPrecio());
+                ps.setString(4, p.getCocinero().getNombre());
+                ps.executeUpdate();
+                ps.close();
+            }
+            
+        }
+    }
+
     public void insertarCocinero(Cocinero c) throws SQLException, MiExcepcion {
         if (existeCocinero(c)) {
-            throw new MiExcepcion("Ya existe un cocinero con ese nombre");
+            throw new MiExcepcion("ERROR: Ya existe un cocinero con ese nombre");
         } else {
             // Definimos la consulta
             String insert = "insert into cocinero values (?, ?, ?, ?, ?, ?)";
@@ -65,6 +91,19 @@ public class RestaurantDAO {
             // cerramos recursos
             ps.close();
         }
+    }
+
+    private boolean existePlato(Plato p) throws SQLException {
+        String select = "select * from plato where nombre='" + p.getNombre() + "'";
+        Statement st = conexion.createStatement();
+        boolean existe = false;
+        ResultSet rs = st.executeQuery(select);
+        if (rs.next()) {
+            existe = true;
+        }
+        rs.close();
+        st.close();
+        return existe;
     }
 
     private boolean existeCocinero(Cocinero c) throws SQLException {
