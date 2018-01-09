@@ -62,7 +62,7 @@ public class RestaurantDAO {
         st.close();
         return cocineros;
     }
-
+  
     // Función que devuelve un plato a partir del nombre
     public Plato getPlatoByNombre(String nombre) throws SQLException, MiExcepcion {
         // Plato auxiliar para comprobar si ya existe
