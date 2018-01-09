@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import modelo.Cocinero;
 import modelo.Plato;
 import modelo.RankingCocineroTO;
@@ -62,7 +64,7 @@ public class RestaurantDAO {
         st.close();
         return cocineros;
     }
-  
+
     // Función que devuelve un plato a partir del nombre
     public Plato getPlatoByNombre(String nombre) throws SQLException, MiExcepcion {
         // Plato auxiliar para comprobar si ya existe
@@ -110,6 +112,26 @@ public class RestaurantDAO {
     }
 
     // ********************* Updates ****************************
+    // Función que sube la experiencia de un cocinero y el precio de un plato
+    public void aumentarPrecioExp(Cocinero c, Plato p) throws SQLException, MiExcepcion {
+        Statement st = conexion.createStatement();
+        try {
+            // Desactivamos autocommit para poder hacer una transacción
+            conexion.setAutoCommit(false);
+            String updateExp = "update cocinero set experiencia = experiencia + 1 where nombre='" + c.getNombre() + "'";
+            String updatePrecio = "update plato set precio = precio + 1 where nombre = '" + p.getNombre() + "'";
+            st.executeQuery(updateExp);
+            st.executeQuery(updatePrecio);
+            conexion.commit();
+        } catch (SQLException ex) {
+            conexion.rollback();
+            throw new MiExcepcion("No se han podido actualizar precio y experiencia!!");
+        } finally {
+            st.close();
+            conexion.setAutoCommit(true);
+        }
+    }
+
     public void modificarExperienciaCocinero(Cocinero c) throws SQLException, MiExcepcion {
         if (!existeCocinero(c)) {
             throw new MiExcepcion("ERROR: No existe un cocinero con ese nombre");
@@ -121,9 +143,9 @@ public class RestaurantDAO {
         ps.executeUpdate();
         ps.close();
     }
-    
+
     // ********************* Deletes ****************************
-      // Función que borra un cocinero
+    // Función que borra un cocinero
     public void borrarCocinero(Cocinero c) throws SQLException, MiExcepcion {
         if (!existeCocinero(c)) {
             throw new MiExcepcion("ERROR: No existe un cocinero con ese nombre");
@@ -155,8 +177,7 @@ public class RestaurantDAO {
         } else // en realidad este else no hace falta
         // Tenemos que asegurarnos de que existe el cocinero, sino
         // daría error de foreign key
-        {
-            if (!existeCocinero(p.getCocinero())) {
+         if (!existeCocinero(p.getCocinero())) {
                 throw new MiExcepcion("ERROR: No existe el cocinero. No se puede dar de alta el plato.");
             } else {
                 String insert = "insert into plato values (?, ?, ?, ?)";
@@ -168,7 +189,6 @@ public class RestaurantDAO {
                 ps.executeUpdate();
                 ps.close();
             }
-        }
     }
 
     public void insertarCocinero(Cocinero c) throws SQLException, MiExcepcion {
@@ -220,7 +240,7 @@ public class RestaurantDAO {
         return existe;
     }
 
-   // ********************* Conectar / Desconectar ****************************
+    // ********************* Conectar / Desconectar ****************************
     public void conectar() throws SQLException {
         String url = "jdbc:mysql://localhost:3306/restaurant";
         String user = "root";
